@@ -74,12 +74,14 @@ timeout(60) {
           }
         }
 
-        stage('Deploy') {
-          dir("ansible") {
-            // Install / update dependencies
-            sh "ansible-galaxy install -r requirements.yml -f"
-            // Execute playbook
-            sh "ansible-playbook cddemo.yml --extra-vars 'app_version=${appVersion} path_to_artifact=../angular-spring-boot-webapp/target/ng-spring-boot.jar  --ansible_ssh_port=\${ANSIBLE_PORT}'"
+        sshagent(['e96eb307-86ff-4858-82bb-cdc20bf1e4b4']) {
+          stage('Deploy') {
+            dir("ansible") {
+              // Install / update dependencies
+              sh "ansible-galaxy install -r requirements.yml -f"
+              // Execute playbook
+              sh "ansible-playbook cddemo.yml --extra-vars 'app_version=${appVersion} path_to_artifact=../angular-spring-boot-webapp/target/ng-spring-boot.jar  --ansible_ssh_port=\${ANSIBLE_PORT}'"
+            }
           }
         }
       }
